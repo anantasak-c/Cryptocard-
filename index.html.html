@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-key="title">Name - Your Crypto Visa Card</title>
+    <!-- Chosen Palette: Futuristic Dark (Background: #0a0a0a, Text: #e5e5e5, Primary: #2563eb, Accent: #4f46e5) -->
+    <!-- Application Structure Plan: A single-page, vertical scrolling landing page with a new language toggle feature. The structure is designed to guide the user through a classic marketing funnel: Hook (Hero), Explain (How it Works), Detail (Features & Dashboard), Offer (Cards), and Clarify (FAQ). A sticky navigation bar provides constant access to all sections, enhancing usability. This linear flow is intuitive for a product showcase, making it easy for users to understand the value proposition step-by-step without getting lost. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Core product features. Goal: Inform & Compare. Viz/Method: Grid of feature cards with icons. Interaction: Hover effects. Justification: Easily scannable and digestible presentation of key benefits. Library: HTML/Tailwind.
+        - Report Info: How the service works. Goal: Explain a process. Viz/Method: A 3-step visual flowchart. Interaction: None, purely informational. Justification: Simplifies a potentially complex process into three clear, memorable steps. Library: HTML/Tailwind.
+        - Report Info: "Interactive Dashboard" concept and mobile app image. Goal: Demonstrate user control in a realistic format. Viz/Method: A simulated dashboard section with a doughnut chart (Portfolio) and a line chart (Spending), combined with a mobile app screen mockup. Interaction: Charts are dynamic and illustrative; the app mockup is a visual element. Justification: Builds credibility and visually demonstrates that the product is usable on both desktop and mobile. Library: Chart.js, HTML/Tailwind.
+        - Report Info: CTA for app download or contact. Goal: Guide user to next step. Viz/Method: A simple, two-column layout with clear buttons and text. Interaction: Clickable buttons. Justification: Provides a clear call-to-action for users to either engage with the app or get more information. Library: HTML/Tailwind, JS for interactivity.
+        - Report Info: FAQ. Goal: Address user questions. Viz/Method: Accordion list. Interaction: Clicking a question toggles the answer's visibility. Justification: Prevents a long, overwhelming wall of text and allows users to find answers to specific questions quickly. Library: JS for interaction. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a0a;
+            color: #e5e5e5;
+        }
+        @import url('https://rsms.me/inter/inter.css');
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 40vh;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .faq-item .answer {
+            display: none;
+            transition: all 0.3s ease-in-out;
+        }
+        .faq-item.open .answer {
+            display: block;
+        }
+        .faq-item.open .icon {
+            transform: rotate(45deg);
+        }
+        .card-tier {
+            transition: all 0.3s ease-in-out;
+            border-color: #374151;
+        }
+        .card-tier.selected {
+            transform: translateY(-10px) scale(1.05);
+            border-color: #2563eb;
+            box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3), 0 4px 6px -2px rgba(37, 99, 235, 0.2);
+        }
+        .phone-mockup {
+            position: relative;
+            width: 320px;
+            height: 640px;
+            background-color: #0d0d0d;
+            border-radius: 40px;
+            border: 8px solid #222;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+        }
+        .phone-notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 25px;
+            background-color: #0d0d0d;
+            border-radius: 0 0 10px 10px;
+            z-index: 10;
+        }
+        .phone-content {
+            padding: 24px;
+            height: 100%;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 100;
+            display: none;
+        }
+        .modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #1a1a1a;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+            max-width: 500px;
+            width: 90%;
+            z-index: 101;
+            display: none;
+        }
+        .hero-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(37, 99, 235, 0.1) 0%, rgba(10, 10, 10, 0) 70%);
+            overflow: hidden;
+        }
+        .hero-background::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(circle, #4f46e5 1px, transparent 1px);
+            background-size: 50px 50px;
+            opacity: 0.1;
+            animation: move-particles 60s linear infinite;
+        }
+        @keyframes move-particles {
+            0% {
+                background-position: 0 0;
+            }
+            100% {
+                background-position: 50px 50px;
+            }
+        }
+        .animated-card-container {
+            position: relative;
+            z-index: 10;
+        }
+        .animated-card {
+            position: relative;
+            border: 2px solid transparent;
+            background: linear-gradient(to right, #0d0d0d, #1a1a1a);
+            animation: pulse-border 2s infinite ease-in-out;
+        }
+        @keyframes pulse-border {
+            0%, 100% {
+                border-color: rgba(37, 99, 235, 0.5);
+                box-shadow: 0 0 15px rgba(37, 99, 235, 0.5);
+            }
+            50% {
+                border-color: rgba(79, 70, 229, 0.8);
+                box-shadow: 0 0 25px rgba(79, 70, 229, 0.8);
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header & Navigation -->
+    <header id="header" class="glass-effect fixed top-0 left-0 right-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold tracking-tighter text-white">Name</h1>
+            <nav class="hidden md:flex space-x-8 items-center">
+                <a href="#home" class="text-neutral-300 hover:text-white transition" data-key="nav-home">Home</a>
+                <a href="#how-it-works" class="text-neutral-300 hover:text-white transition" data-key="nav-how">How It Works</a>
+                <a href="#features" class="text-neutral-300 hover:text-white transition" data-key="nav-features">Features</a>
+                <a href="#cards" class="text-neutral-300 hover:text-white transition" data-key="nav-cards">Cards</a>
+                <a href="#faq" class="text-neutral-300 hover:text-white transition" data-key="nav-faq">FAQ</a>
+            </nav>
+            <div class="flex items-center space-x-4">
+                <div class="flex items-center space-x-2">
+                    <button class="lang-toggle text-sm font-semibold text-white px-2 py-1 rounded-md" data-lang="en">EN</button>
+                    <button class="lang-toggle text-sm font-semibold text-neutral-400 hover:text-white px-2 py-1 rounded-md" data-lang="ko">KO</button>
+                </div>
+                <a href="#" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-5 rounded-lg transition hidden md:block" data-key="cta-header">Get Your Card</a>
+            </div>
+             <button id="mobile-menu-button" class="md:hidden text-white focus:outline-none">
+                <span class="text-3xl">≡</span>
+            </button>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden">
+            <nav class="flex flex-col items-center space-y-4 px-6 pt-2 pb-6">
+                <a href="#home" class="text-neutral-300 hover:text-white transition" data-key="nav-home">Home</a>
+                <a href="#how-it-works" class="text-neutral-300 hover:text-white transition" data-key="nav-how">How It Works</a>
+                <a href="#features" class="text-neutral-300 hover:text-white transition" data-key="nav-features">Features</a>
+                <a href="#cards" class="text-neutral-300 hover:text-white transition" data-key="nav-cards">Cards</a>
+                <a href="#faq" class="text-neutral-300 hover:text-white transition" data-key="nav-faq">FAQ</a>
+                <a href="#" class="w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-5 rounded-lg transition" data-key="cta-header">Get Your Card</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="home" class="min-h-screen flex items-center pt-24 md:pt-0 relative">
+            <div class="hero-background"></div>
+            <div class="container mx-auto px-6 text-center relative z-10">
+                <div class="max-w-4xl mx-auto">
+                    <h2 class="text-4xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight mb-6 mt-16 md:mt-0" data-key="hero-title">
+                        Spend Your Crypto.<br>
+                        <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-indigo-500">Anywhere. Anytime</span>
+                    </h2>
+                    <p class="text-lg md:text-xl text-neutral-300 mb-8" data-key="hero-subtitle">
+                        Connect your crypto wallet, get a global Visa card, and unlock the power of your digital assets for everyday purchases.
+                    </p>
+                    <a href="#cards" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-10 rounded-lg transition text-lg" data-key="cta-hero">
+                        Get Your Name Card
+                    </a>
+                </div>
+                <div class="mt-12 flex justify-center items-center animated-card-container">
+                    <div class="w-full max-w-sm h-56 rounded-2xl p-6 animated-card flex flex-col justify-between">
+                        <div class="flex justify-between items-start">
+                            <span class="text-2xl font-bold text-white">Name</span>
+                            <span class="text-2xl font-bold text-white italic">VISA</span>
+                        </div>
+                        <div class="text-left">
+                            <p class="text-2xl font-mono tracking-widest text-neutral-300">4000 1234 5678 9010</p>
+                            <div class="flex justify-between text-sm mt-2">
+                                <p class="text-neutral-400" data-key="card-holder-label">CARD HOLDER</p>
+                                <p class="text-neutral-400" data-key="expires-label">EXPIRES</p>
+                            </div>
+                             <div class="flex justify-between font-medium">
+                                <p class="text-white">Satoshi N.</p>
+                                <p class="text-white">12/28</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                 <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                    <div class="text-center">
+                        <h3 class="text-3xl font-bold text-blue-500">100+</h3>
+                        <p class="text-neutral-300 mt-2" data-key="stats-crypto">Cryptocurrencies Supported</p>
+                    </div>
+                    <div class="text-center">
+                        <h3 class="text-3xl font-bold text-blue-500">0%</h3>
+                        <p class="text-neutral-300 mt-2" data-key="stats-fees">Foreign Transaction Fees</p>
+                    </div>
+                    <div class="text-center">
+                        <h3 class="text-3xl font-bold text-blue-500">200+</h3>
+                        <p class="text-neutral-300 mt-2" data-key="stats-countries">Countries Accepted</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works Section -->
+        <section id="how-it-works" class="py-20 bg-black">
+            <div class="container mx-auto px-6">
+                <div class="text-center max-w-2xl mx-auto">
+                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-4" data-key="how-it-works-title">Getting Started is Easy</h2>
+                    <p class="text-neutral-300 mb-12" data-key="how-it-works-subtitle">This section explains the simple, three-step process to get and use your Name card. We've designed it to be as straightforward as possible, bridging the gap between your crypto and everyday spending seamlessly.</p>
+                </div>
+                <div class="grid md:grid-cols-3 gap-10 max-w-6xl mx-auto">
+                    <div class="text-center p-8 rounded-2xl glass-effect">
+                        <div class="text-5xl font-bold text-blue-500 mb-4">1</div>
+                        <h3 class="text-2xl font-semibold text-white mb-3" data-key="step1-title">Connect Wallet</h3>
+                        <p class="text-neutral-300" data-key="step1-text">Securely link your existing crypto wallet like MetaMask, Ledger, or Coinbase. Your keys are always yours.</p>
+                    </div>
+                    <div class="text-center p-8 rounded-2xl glass-effect">
+                        <div class="text-5xl font-bold text-blue-500 mb-4">2</div>
+                        <h3 class="text-2xl font-semibold text-white mb-3" data-key="step2-title">Fund Your Card</h3>
+                        <p class="text-neutral-300" data-key="step2-text">Transfer the crypto you want to spend to your secure Name account. We support a wide range of assets.</p>
+                    </div>
+                    <div class="text-center p-8 rounded-2xl glass-effect">
+                        <div class="text-5xl font-bold text-blue-500 mb-4">3</div>
+                        <h3 class="text-2xl font-semibold text-white mb-3" data-key="step3-title">Spend Globally</h3>
+                        <p class="text-neutral-300" data-key="step3-text">Use your physical or virtual Name Visa card for online and in-store purchases anywhere Visa is accepted.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="py-20">
+            <div class="container mx-auto px-6">
+                <div class="text-center max-w-2xl mx-auto">
+                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-4" data-key="features-title">Packed with Powerful Features</h2>
+                    <p class="text-neutral-300 mb-12" data-key="features-subtitle">Explore the core benefits that make the Name card the ultimate tool for your digital assets. This section highlights everything from global usability to iron-clad security, showing you how we prioritize your convenience and peace of mind.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Feature Card -->
+                    <div class="p-8 rounded-2xl glass-effect">
+                        <div class="text-4xl mb-4 text-blue-500">🌍</div>
+                        <h3 class="text-xl font-bold text-white mb-2" data-key="feature1-title">Universal Acceptance</h3>
+                        <p class="text-neutral-300" data-key="feature1-text">Accepted at millions of merchants worldwide, wherever you see the Visa logo.</p>
+                    </div>
+                     <!-- Feature Card -->
+                    <div class="p-8 rounded-2xl glass-effect">
+                        <div class="text-4xl mb-4 text-blue-500">💸</div>
+                        <h3 class="text-xl font-bold text-white mb-2" data-key="feature2-title">Multi-Asset Support</h3>
+                        <p class="text-neutral-300" data-key="feature2-text">Flexibly spend from your portfolio of Bitcoin, Ethereum, stablecoins, and more.</p>
+                    </div>
+                     <!-- Feature Card -->
+                    <div class="p-8 rounded-2xl glass-effect">
+                        <div class="text-4xl mb-4 text-blue-500">💰</div>
+                        <h3 class="text-xl font-bold text-white mb-2" data-key="feature3-title">Low to Zero Fees</h3>
+                        <p class="text-neutral-300" data-key="feature3-text">Enjoy no annual fees, no inactivity fees, and highly competitive conversion rates.</p>
+                    </div>
+                     <!-- Feature Card -->
+                    <div class="p-8 rounded-2xl glass-effect">
+                        <div class="text-4xl mb-4 text-blue-500">🎁</div>
+                        <h3 class="text-xl font-bold text-white mb-2" data-key="feature4-title">Crypto Rewards</h3>
+                        <p class="text-neutral-300" data-key="feature4-text">Earn a percentage of your spending back in your favorite cryptocurrency.</p>
+                    </div>
+                     <!-- Feature Card -->
+                    <div class="p-8 rounded-2xl glass-effect">
+                        <div class="text-4xl mb-4 text-blue-500">🛡️</div>
+                        <h3 class="text-xl font-bold text-white mb-2" data-key="feature5-title">Iron-Clad Security</h3>
+                        <p class="text-neutral-300" data-key="feature5-text">Protected by 2-Factor Authentication and institutional-grade cold storage.</p>
+                    </div>
+                     <!-- Feature Card -->
+                    <div class="p-8 rounded-2xl glass-effect">
+                        <div class="text-4xl mb-4 text-blue-500">📱</div>
+                        <h3 class="text-xl font-bold text-white mb-2" data-key="feature6-title">Total Control</h3>
+                        <p class="text-neutral-300" data-key="feature6-text">Instantly freeze your card, view transactions, and manage your assets in our app.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dashboard Simulation Section -->
+        <section id="dashboard" class="py-20 bg-black">
+            <div class="container mx-auto px-6">
+                <div class="text-center max-w-2xl mx-auto">
+                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-4" data-key="dashboard-title">Your Finances, Visualized</h2>
+                    <p class="text-neutral-300 mb-12" data-key="dashboard-subtitle">Experience total control of your digital assets on the go with our intuitive dashboard, available on both web and mobile.</p>
+                </div>
+                <div class="grid lg:grid-cols-2 gap-12 items-center justify-center">
+                    <!-- Mobile Mockup -->
+                    <div class="flex justify-center order-2 lg:order-1">
+                        <div class="phone-mockup">
+                            <div class="phone-notch"></div>
+                            <div class="phone-content text-neutral-300">
+                                <div class="flex justify-between items-center text-sm font-semibold mb-4">
+                                    <span>3:15</span>
+                                    <div class="flex space-x-1">
+                                        <span>📶</span>
+                                        <span>🔋</span>
+                                    </div>
+                                </div>
+                                <div class="flex justify-between items-center mb-6">
+                                     <button class="text-white text-lg">☰</button>
+                                     <span class="text-xs text-blue-400 p-1 bg-blue-900 rounded-full" data-key="mobile-cta-invite">Invite and Earn</span>
+                                </div>
+                                <div class="text-center mb-6">
+                                    <p class="text-sm" data-key="mobile-balance-label">Total Balance (USD)</p>
+                                    <p class="text-4xl font-bold text-white mt-2">$38,686.00</p>
+                                    <p class="text-sm text-neutral-400">≈ 0.589 BTC</p>
+                                </div>
+                                <div class="h-24 mb-6">
+                                    <canvas id="mobileSpendingChart"></canvas>
+                                </div>
+                                <div class="flex justify-between space-x-4 mb-6">
+                                    <button class="w-full py-3 rounded-lg bg-red-600 text-white font-semibold" data-key="mobile-deposit-btn">
+                                        Deposit
+                                    </button>
+                                     <button class="w-full py-3 rounded-lg glass-effect text-white font-semibold" data-key="mobile-withdraw-btn">
+                                        Withdraw
+                                    </button>
+                                </div>
+                                <div class="space-y-4">
+                                     <div class="flex items-center justify-between p-4 rounded-xl glass-effect">
+                                        <div class="flex items-center">
+                                            <span class="text-2xl mr-4">₮</span>
+                                            <div>
+                                                <p class="text-white font-semibold">USDT</p>
+                                                <p class="text-xs text-neutral-400">USDT</p>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="text-white font-semibold">23,432.00</p>
+                                            <p class="text-xs text-neutral-400">≈23,432.00 USD</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-between p-4 rounded-xl glass-effect">
+                                        <div class="flex items-center">
+                                            <span class="text-2xl mr-4">฿</span>
+                                            <div>
+                                                <p class="text-white font-semibold">Bitcoin</p>
+                                                <p class="text-xs text-neutral-400">BTC</p>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="text-white font-semibold">34.00</p>
+                                            <p class="text-xs text-neutral-400">≈234,242.00 USD</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-between p-4 rounded-xl glass-effect">
+                                        <div class="flex items-center">
+                                            <span class="text-2xl mr-4">Ξ</span>
+                                            <div>
+                                                <p class="text-white font-semibold">Ethereum</p>
+                                                <p class="text-xs text-neutral-400">ETH</p>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="text-white font-semibold">23,432.00</p>
+                                            <p class="text-xs text-neutral-400">≈234,242.00 USD</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-between p-4 rounded-xl glass-effect">
+                                        <div class="flex items-center">
+                                            <span class="text-2xl mr-4">$</span>
+                                            <div>
+                                                <p class="text-white font-semibold">USDC</p>
+                                                <p class="text-xs text-neutral-400">USDC</p>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="text-white font-semibold">674,676,897.00</p>
+                                            <p class="text-xs text-neutral-400">≈234,242.00 USD</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Desktop Charts -->
+                    <div class="flex flex-col space-y-12 order-1 lg:order-2">
+                         <div class="p-8 rounded-2xl glass-effect">
+                            <h3 class="text-xl font-bold text-white mb-4 text-center" data-key="portfolio-chart-title">Portfolio Allocation</h3>
+                            <div class="chart-container">
+                                <canvas id="portfolioChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="p-8 rounded-2xl glass-effect">
+                            <h3 class="text-xl font-bold text-white mb-4 text-center" data-key="spending-chart-title">Weekly Spending</h3>
+                            <div class="chart-container">
+                                <canvas id="spendingChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cards Section -->
+        <section id="cards" class="py-20 text-center">
+            <div class="container mx-auto px-6 max-w-2xl">
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-4" data-key="cards-title">Ready to get your Name card?</h2>
+                <p class="text-neutral-300 mb-12" data-key="cards-subtitle">Get started with our mobile app to manage your assets on the go, or contact our sales team to discuss our tiered card solutions for your business.</p>
+                <div class="flex flex-col md:flex-row justify-center space-y-6 md:space-y-0 md:space-x-6">
+                    <a href="#" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-10 rounded-lg transition text-lg" data-key="app-download-btn">
+                        Download App
+                    </a>
+                    <button id="contact-button" class="glass-effect text-white font-bold py-4 px-10 rounded-lg transition text-lg" data-key="contact-btn">
+                        Contact Us
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section id="faq" class="py-20 bg-black">
+            <div class="container mx-auto px-6 max-w-3xl">
+                <div class="text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-4" data-key="faq-title">Frequently Asked Questions</h2>
+                    <p class="text-neutral-300 mb-12" data-key="faq-subtitle">Have questions? We have answers. This section addresses the most common inquiries about the Name card, from security details to how fees work. If you don't find your answer here, our support team is always ready to help.</p>
+                </div>
+                <div class="space-y-4">
+                    <!-- FAQ Item -->
+                    <div class="faq-item border-b border-gray-700 pb-4">
+                        <div class="question flex justify-between items-center cursor-pointer">
+                            <h3 class="text-lg font-semibold text-white" data-key="q1">Is the Name card safe to use?</h3>
+                            <span class="icon text-2xl text-blue-500 transition-transform">+</span>
+                        </div>
+                        <div class="answer mt-4 text-neutral-300" data-key="a1">
+                            <p>Absolutely. Security is our top priority. We use industry-leading security measures, including 2-Factor Authentication (2FA), cold storage for the majority of assets, and real-time fraud monitoring. You can also instantly freeze and unfreeze your card from the app at any time.</p>
+                        </div>
+                    </div>
+                    <!-- FAQ Item -->
+                    <div class="faq-item border-b border-gray-700 pb-4">
+                        <div class="question flex justify-between items-center cursor-pointer">
+                            <h3 class="text-lg font-semibold text-white" data-key="q2">What are the fees?</h3>
+                            <span class="icon text-2xl text-blue-500 transition-transform">+</span>
+                        </div>
+                        <div class="answer mt-4 text-neutral-300" data-key="a2">
+                            <p>We believe in transparency. There are no annual fees, no foreign transaction fees, and no inactivity fees. When you spend, we offer highly competitive conversion rates to convert your crypto to fiat currency at the point of sale. For our Premium tier, there is a monthly subscription fee.</p>
+                        </div>
+                    </div>
+                    <!-- FAQ Item -->
+                    <div class="faq-item border-b border-gray-700 pb-4">
+                        <div class="question flex justify-between items-center cursor-pointer">
+                            <h3 class="text-lg font-semibold text-white" data-key="q3">Which cryptocurrencies are supported?</h3>
+                            <span class="icon text-2xl text-blue-500 transition-transform">+</span>
+                        </div>
+                        <div class="answer mt-4 text-neutral-300" data-key="a3">
+                            <p>We support over 100 cryptocurrencies, including major assets like Bitcoin (BTC), Ethereum (ETH), Solana (SOL), and a wide range of stablecoins like USDC and USDT. We are constantly expanding our list of supported assets.</p>
+                        </div>
+                    </div>
+                    <!-- FAQ Item -->
+                    <div class="faq-item border-b border-gray-700 pb-4">
+                        <div class="question flex justify-between items-center cursor-pointer">
+                            <h3 class="text-lg font-semibold text-white" data-key="q4">How does spending crypto work for taxes?</h3>
+                            <span class="icon text-2xl text-blue-500 transition-transform">+</span>
+                        </div>
+                        <div class="answer mt-4 text-neutral-300" data-key="a4">
+                            <p>Spending cryptocurrency is typically a taxable event in many jurisdictions, similar to selling it. We provide detailed transaction histories and are working on integrated tax reporting tools to help you stay compliant. We recommend consulting with a tax professional for advice specific to your situation.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Contact Modal -->
+    <div id="contact-modal-overlay" class="modal-overlay"></div>
+    <div id="contact-modal" class="modal">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-2xl font-bold text-white" data-key="contact-modal-title">Contact Us</h3>
+            <button id="close-contact-modal" class="text-white text-3xl font-light leading-none">&times;</button>
+        </div>
+        <form id="contact-form">
+            <div class="mb-4">
+                <label for="name" class="block text-sm font-medium text-neutral-400 mb-2" data-key="contact-label-name">Name</label>
+                <input type="text" id="name" name="name" class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:border-blue-500" required>
+            </div>
+            <div class="mb-4">
+                <label for="email" class="block text-sm font-medium text-neutral-400 mb-2" data-key="contact-label-email">Email</label>
+                <input type="email" id="email" name="email" class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:border-blue-500" required>
+            </div>
+            <div class="mb-6">
+                <label for="message" class="block text-sm font-medium text-neutral-400 mb-2" data-key="contact-label-message">Message</label>
+                <textarea id="message" name="message" rows="4" class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:border-blue-500" required></textarea>
+            </div>
+            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition" data-key="contact-send-btn">Send Message</button>
+        </form>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-black border-t border-gray-800 py-12">
+        <div class="container mx-auto px-6 text-center text-neutral-400">
+            <p data-key="footer-copyright">&copy; 2025 Name. All rights reserved.</p>
+            <p class="text-sm mt-2" data-key="footer-disclaimer">Name is a financial technology company, not a bank. Card issued by a partner bank, pursuant to a license from Visa U.S.A. Inc.</p>
+            <div class="mt-4 flex justify-center space-x-6">
+                <a href="#" class="hover:text-white" data-key="footer-privacy">Privacy Policy</a>
+                <a href="#" class="hover:text-white" data-key="footer-terms">Terms of Service</a>
+                <a href="#" class="hover:text-white" data-key="footer-contact">Contact</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const translations = {
+            en: {
+                "title": "Name - Your Crypto Visa Card",
+                "nav-home": "Home",
+                "nav-how": "How It Works",
+                "nav-features": "Features",
+                "nav-cards": "Cards",
+                "nav-faq": "FAQ",
+                "cta-header": "Get Your Card",
+                "hero-title": "Spend Your Crypto.<br>Anywhere. Anytime",
+                "hero-subtitle": "Connect your crypto wallet, get a global Visa card, and unlock the power of your digital assets for everyday purchases.",
+                "cta-hero": "Get Your Name Card",
+                "card-holder-label": "CARD HOLDER",
+                "expires-label": "EXPIRES",
+                "stats-crypto": "Cryptocurrencies Supported",
+                "stats-fees": "Foreign Transaction Fees",
+                "stats-countries": "Countries Accepted",
+                "how-it-works-title": "Getting Started is Easy",
+                "how-it-works-subtitle": "This section explains the simple, three-step process to get and use your Name card. We've designed it to be as straightforward as possible, bridging the gap between your crypto and everyday spending seamlessly.",
+                "step1-title": "Connect Wallet",
+                "step1-text": "Securely link your existing crypto wallet like MetaMask, Ledger, or Coinbase. Your keys are always yours.",
+                "step2-title": "Fund Your Card",
+                "step2-text": "Transfer the crypto you want to spend to your secure Name account. We support a wide range of assets.",
+                "step3-title": "Spend Globally",
+                "step3-text": "Use your physical or virtual Name Visa card for online and in-store purchases anywhere Visa is accepted.",
+                "features-title": "Packed with Powerful Features",
+                "features-subtitle": "Explore the core benefits that make the Name card the ultimate tool for your digital assets. This section highlights everything from global usability to iron-clad security, showing you how we prioritize your convenience and peace of mind.",
+                "feature1-title": "Universal Acceptance",
+                "feature1-text": "Accepted at millions of merchants worldwide, wherever you see the Visa logo.",
+                "feature2-title": "Multi-Asset Support",
+                "feature2-text": "Flexibly spend from your portfolio of Bitcoin, Ethereum, stablecoins, and more.",
+                "feature3-title": "Low to Zero Fees",
+                "feature3-text": "Enjoy no annual fees, no inactivity fees, and highly competitive conversion rates.",
+                "feature4-title": "Crypto Rewards",
+                "feature4-text": "Earn a percentage of your spending back in your favorite cryptocurrency.",
+                "feature5-title": "Iron-Clad Security",
+                "feature5-text": "Protected by 2-Factor Authentication and institutional-grade cold storage.",
+                "feature6-title": "Total Control",
+                "feature6-text": "Instantly freeze your card, view transactions, and manage your assets in our app.",
+                "dashboard-title": "Your Finances, Visualized",
+                "dashboard-subtitle": "Experience total control of your digital assets on the go with our intuitive dashboard, available on both web and mobile.",
+                "mobile-cta-invite": "Invite and Earn",
+                "mobile-balance-label": "Total Balance (USD)",
+                "mobile-deposit-btn": "Deposit",
+                "mobile-withdraw-btn": "Withdraw",
+                "portfolio-chart-title": "Portfolio Allocation",
+                "spending-chart-title": "Weekly Spending",
+                "cards-title": "Ready to get your Name card?",
+                "cards-subtitle": "Get started with our mobile app to manage your assets on the go, or contact our sales team to discuss our tiered card solutions for your business.",
+                "app-download-btn": "Download App",
+                "contact-btn": "Contact Us",
+                "faq-title": "Frequently Asked Questions",
+                "faq-subtitle": "Have questions? We have answers. This section addresses the most common inquiries about the Name card, from security details to how fees work. If you don't find your answer here, our support team is always ready to help.",
+                "q1": "Is the Name card safe to use?",
+                "a1": "Absolutely. Security is our top priority. We use industry-leading security measures, including 2-Factor Authentication (2FA), cold storage for the majority of assets, and real-time fraud monitoring. You can also instantly freeze and unfreeze your card from the app at any time.",
+                "q2": "What are the fees?",
+                "a2": "We believe in transparency. There are no annual fees, no foreign transaction fees, and no inactivity fees. When you spend, we offer highly competitive conversion rates to convert your crypto to fiat currency at the point of sale. For our Premium tier, there is a monthly subscription fee.",
+                "q3": "Which cryptocurrencies are supported?",
+                "a3": "We support over 100 cryptocurrencies, including major assets like Bitcoin (BTC), Ethereum (ETH), Solana (SOL), and a wide range of stablecoins like USDC and USDT. We are constantly expanding our list of supported assets.",
+                "q4": "How does spending crypto work for taxes?",
+                "a4": "Spending cryptocurrency is typically a taxable event in many jurisdictions, similar to selling it. We provide detailed transaction histories and are working on integrated tax reporting tools to help you stay compliant. We recommend consulting with a tax professional for advice specific to your situation.",
+                "contact-modal-title": "Contact Us",
+                "contact-label-name": "Name",
+                "contact-label-email": "Email",
+                "contact-label-message": "Message",
+                "contact-send-btn": "Send Message",
+                "footer-copyright": "&copy; 2025 Name. All rights reserved.",
+                "footer-disclaimer": "Name is a financial technology company, not a bank. Card issued by a partner bank, pursuant to a license from Visa U.S.A. Inc.",
+                "footer-privacy": "Privacy Policy",
+                "footer-terms": "Terms of Service",
+                "footer-contact": "Contact",
+                "chart-labels-portfolio": ['Bitcoin (BTC)', 'Ethereum (ETH)', 'Solana (SOL)', 'USDC'],
+                "chart-labels-spending": ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                "chart-labels-mobile": ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul']
+            },
+            ko: {
+                "title": "Name - 암호화폐 비자카드",
+                "nav-home": "홈",
+                "nav-how": "작동 방식",
+                "nav-features": "기능",
+                "nav-cards": "카드",
+                "nav-faq": "자주 묻는 질문",
+                "cta-header": "카드 받기",
+                "hero-title": "어디서든, 언제든,<br>암호화폐를 사용하세요",
+                "hero-subtitle": "암호화폐 지갑을 연결하고 글로벌 비자카드를 받아 일상적인 구매에 디지털 자산의 힘을 활용하세요.",
+                "cta-hero": "Name 카드 받기",
+                "card-holder-label": "카드 소유자",
+                "expires-label": "만료일",
+                "stats-crypto": "지원되는 암호화폐",
+                "stats-fees": "해외 거래 수수료",
+                "stats-countries": "지원 국가",
+                "how-it-works-title": "쉽게 시작하기",
+                "how-it-works-subtitle": "이 섹션에서는 Name 카드를 받고 사용하는 간단한 3단계 과정을 설명합니다. 암호화폐와 일상적인 지출을 원활하게 연결하도록 설계되었습니다.",
+                "step1-title": "지갑 연결",
+                "step1-text": "메타마스크, 렛저, 코인베이스와 같은 기존 암호화폐 지갑을 안전하게 연결하세요. 귀하의 키는 항상 귀하의 것입니다.",
+                "step2-title": "카드에 자금 충전",
+                "step2-text": "사용하려는 암호화폐를 Name 계정으로 전송하세요. 다양한 자산을 지원합니다.",
+                "step3-title": "전 세계에서 사용",
+                "step3-text": "물리적 또는 가상 Name 비자카드를 사용하여 비자가 허용되는 전 세계 모든 곳에서 온라인 및 오프라인 구매에 사용하세요.",
+                "features-title": "강력한 기능",
+                "features-subtitle": "Name 카드를 디지털 자산을 위한 최고의 도구로 만드는 핵심적인 이점을 살펴보세요. 이 섹션은 전 세계적인 사용성부터 철저한 보안까지 모든 것을 강조하여 귀하의 편의와 마음의 평화를 우선시합니다.",
+                "feature1-title": "범용성",
+                "feature1-text": "비자 로고가 있는 전 세계 수백만 가맹점에서 사용할 수 있습니다.",
+                "feature2-title": "다중 자산 지원",
+                "feature2-text": "비트코인, 이더리움, 스테이블코인 등 다양한 포트폴리오의 자산을 유연하게 사용할 수 있습니다.",
+                "feature3-title": "낮거나 없는 수수료",
+                "feature3-text": "연회비, 비활동 수수료가 없으며 경쟁력 있는 환율을 제공합니다.",
+                "feature4-title": "암호화폐 리워드",
+                "feature4-text": "지출 금액의 일부를 좋아하는 암호화폐로 돌려받으세요.",
+                "feature5-title": "철통 보안",
+                "feature5-text": "2단계 인증 및 기관 등급의 콜드 스토리지로 보호됩니다.",
+                "feature6-title": "완전한 통제",
+                "feature6-text": "앱에서 카드를 즉시 동결하거나, 거래 내역을 확인하거나, 자산을 관리할 수 있습니다.",
+                "dashboard-title": "한눈에 보는 금융",
+                "dashboard-subtitle": "웹과 모바일에서 모두 사용 가능한 직관적인 대시보드로 이동 중에도 디지털 자산을 완벽하게 통제하세요.",
+                "mobile-cta-invite": "초대하고 적립",
+                "mobile-balance-label": "총 잔액 (USD)",
+                "mobile-deposit-btn": "입금",
+                "mobile-withdraw-btn": "출금",
+                "portfolio-chart-title": "포트폴리오 할당",
+                "spending-chart-title": "주간 지출",
+                "cards-title": "Name 카드를 받을 준비가 되셨나요?",
+                "cards-subtitle": "이동 중에 자산을 관리하려면 모바일 앱으로 시작하거나, 비즈니스용 카드 솔루션에 대해 논의하려면 저희 영업팀에 문의하세요.",
+                "app-download-btn": "앱 다운로드",
+                "contact-btn": "문의하기",
+                "faq-title": "자주 묻는 질문",
+                "faq-subtitle": "질문이 있으신가요? 저희가 답변해 드립니다. 이 섹션에서는 보안 세부 정보부터 수수료 작동 방식까지 Name 카드에 대한 가장 일반적인 질문들을 다룹니다. 여기에서 답변을 찾지 못하면 언제든지 지원팀이 도와드릴 준비가 되어 있습니다.",
+                "q1": "Name 카드는 안전한가요?",
+                "a1": "물론입니다. 보안은 저희의 최우선 과제입니다. 2단계 인증(2FA), 대부분의 자산에 대한 콜드 스토리지, 실시간 사기 모니터링을 포함한 업계 최고의 보안 조치를 사용합니다. 또한 앱에서 언제든지 카드를 즉시 동결 및 동결 해제할 수 있습니다.",
+                "q2": "수수료는 어떻게 되나요?",
+                "a2": "저희는 투명성을 믿습니다. 연회비, 해외 거래 수수료, 비활동 수수료는 없습니다. 지출 시에는 암호화폐를 판매 시점에서 법정화폐로 전환하기 위한 매우 경쟁력 있는 환율을 제공합니다. 프리미엄 등급의 경우 월 구독료가 있습니다.",
+                "q3": "어떤 암호화폐를 지원하나요?",
+                "a3": "저희는 비트코인(BTC), 이더리움(ETH), 솔라나(SOL)와 같은 주요 자산과 USDC, USDT와 같은 다양한 스테이블코인을 포함하여 100개 이상의 암호화폐를 지원합니다. 지원하는 자산 목록을 지속적으로 확장하고 있습니다.",
+                "q4": "암호화폐 지출은 세금에 어떻게 영향을 미치나요?",
+                "a4": "암호화폐 지출은 판매와 유사하게 많은 관할권에서 과세 대상이 되는 경우가 많습니다. 저희는 상세한 거래 내역을 제공하며, 귀하가 규정을 준수하는 데 도움이 되는 통합 세금 보고 도구를 개발하고 있습니다. 귀하의 상황에 맞는 조언을 위해 세무 전문가와 상담하는 것을 권장합니다.",
+                "contact-modal-title": "문의하기",
+                "contact-label-name": "이름",
+                "contact-label-email": "이메일",
+                "contact-label-message": "메시지",
+                "contact-send-btn": "메시지 보내기",
+                "footer-copyright": "&copy; 2025 Name. 모든 권리 보유.",
+                "footer-disclaimer": "Name은 금융 기술 회사이며 은행이 아닙니다. 카드는 Visa U.S.A. Inc.의 라이선스에 따라 파트너 은행에서 발행합니다.",
+                "footer-privacy": "개인정보처리방침",
+                "footer-terms": "서비스 약관",
+                "footer-contact": "문의하기",
+                "chart-labels-portfolio": ['비트코인 (BTC)', '이더리움 (ETH)', '솔라나 (SOL)', 'USDC'],
+                "chart-labels-spending": ['월', '화', '수', '목', '금', '토', '일'],
+                "chart-labels-mobile": ['1월', '2월', '3월', '4월', '5월', '6월', '7월']
+            }
+        };
+
+        let currentLang = 'en';
+        let charts = {};
+
+        function createCharts() {
+            // Portfolio Chart
+            const portfolioCtx = document.getElementById('portfolioChart').getContext('2d');
+            charts.portfolioChart = new Chart(portfolioCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: translations[currentLang]['chart-labels-portfolio'],
+                    datasets: [{
+                        label: translations[currentLang]['portfolio-chart-title'],
+                        data: [45, 30, 15, 10],
+                        backgroundColor: [
+                            'rgba(247, 147, 26, 0.7)',
+                            'rgba(98, 126, 234, 0.7)',
+                            'rgba(153, 69, 255, 0.7)',
+                            'rgba(39, 117, 202, 0.7)'
+                        ],
+                        borderColor: [
+                            '#F7931A',
+                            '#627EEA',
+                            '#9945FF',
+                            '#2775CA'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#e5e5e5',
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Spending Chart
+            const spendingCtx = document.getElementById('spendingChart').getContext('2d');
+            charts.spendingChart = new Chart(spendingCtx, {
+                type: 'line',
+                data: {
+                    labels: translations[currentLang]['chart-labels-spending'],
+                    datasets: [{
+                        label: translations[currentLang]['spending-chart-title'],
+                        data: [65, 59, 80, 81, 56, 120, 90],
+                        fill: true,
+                        backgroundColor: 'rgba(37, 99, 235, 0.2)',
+                        borderColor: '#2563eb',
+                        tension: 0.4,
+                        pointBackgroundColor: '#2563eb',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#2563eb'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#e5e5e5'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                                ticks: {
+                                color: '#e5e5e5'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+
+            // Mobile Spending Chart
+            const mobileSpendingCtx = document.getElementById('mobileSpendingChart').getContext('2d');
+            charts.mobileSpendingChart = new Chart(mobileSpendingCtx, {
+                type: 'line',
+                data: {
+                    labels: translations[currentLang]['chart-labels-mobile'],
+                    datasets: [{
+                        label: translations[currentLang]['mobile-balance-label'],
+                        data: [25000, 30000, 28000, 35000, 32000, 40000, 38686],
+                        fill: true,
+                        backgroundColor: 'rgba(37, 99, 235, 0.2)',
+                        borderColor: '#2563eb',
+                        tension: 0.4,
+                        pointRadius: 0,
+                        pointHoverRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            display: false,
+                        },
+                        x: {
+                            display: false,
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            enabled: true,
+                        }
+                    }
+                }
+            });
+        }
+
+        function destroyCharts() {
+            if (charts.portfolioChart) charts.portfolioChart.destroy();
+            if (charts.spendingChart) charts.spendingChart.destroy();
+            if (charts.mobileSpendingChart) charts.mobileSpendingChart.destroy();
+        }
+
+        function updateLanguage(lang) {
+            // Update all text content
+            document.querySelectorAll('[data-key]').forEach(element => {
+                const key = element.dataset.key;
+                element.innerHTML = translations[lang][key] || element.innerHTML;
+            });
+            
+            // Update active language button style
+            document.querySelectorAll('.lang-toggle').forEach(button => {
+                if (button.dataset.lang === lang) {
+                    button.classList.add('text-white', 'font-semibold');
+                    button.classList.remove('text-neutral-400', 'hover:text-white');
+                } else {
+                    button.classList.remove('text-white', 'font-semibold');
+                    button.classList.add('text-neutral-400', 'hover:text-white');
+                }
+            });
+
+            // Destroy and recreate charts with new labels
+            destroyCharts();
+            currentLang = lang; // Update current language before creating charts
+            createCharts();
+        }
+        
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initial setup
+            updateLanguage(currentLang);
+
+            // Mobile Menu Toggle
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            // Language Toggle
+            document.querySelectorAll('.lang-toggle').forEach(button => {
+                button.addEventListener('click', () => {
+                    updateLanguage(button.dataset.lang);
+                });
+            });
+
+            // FAQ Accordion
+            const faqItems = document.querySelectorAll('.faq-item');
+            faqItems.forEach(item => {
+                const question = item.querySelector('.question');
+                question.addEventListener('click', () => {
+                    const currentlyOpen = document.querySelector('.faq-item.open');
+                    if (currentlyOpen && currentlyOpen !== item) {
+                        currentlyOpen.classList.remove('open');
+                    }
+                    item.classList.toggle('open');
+                });
+            });
+
+            // Contact Modal Logic
+            const contactButton = document.getElementById('contact-button');
+            const contactModal = document.getElementById('contact-modal');
+            const contactModalOverlay = document.getElementById('contact-modal-overlay');
+            const closeContactModalButton = document.getElementById('close-contact-modal');
+
+            contactButton.addEventListener('click', () => {
+                contactModal.style.display = 'block';
+                contactModalOverlay.style.display = 'block';
+            });
+            
+            closeContactModalButton.addEventListener('click', () => {
+                contactModal.style.display = 'none';
+                contactModalOverlay.style.display = 'none';
+            });
+
+            contactModalOverlay.addEventListener('click', () => {
+                 contactModal.style.display = 'none';
+                 contactModalOverlay.style.display = 'none';
+            });
+
+            // Prevent form submission for demo purposes
+            document.getElementById('contact-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                alert('Form submitted! (This is a demo, no data was sent)');
+                contactModal.style.display = 'none';
+                contactModalOverlay.style.display = 'none';
+            });
+
+        });
+    </script>
+</body>
+</html>
